@@ -21,9 +21,11 @@ print "$iwconfig->{essid}\t$iwconfig->{bitRate}\t$iwconfig->{txPower}\t$iwconfig
 
 print checkPing("www.google.com")."\t";
 print checkPing("192.168.1.1")."\t";
-print checkPing("192.168.1.10")."\t";
+print checkPing("192.168.1.11")."\t";
 print checkSSH("localhost","22")."\t";
 print checkHTTP("localhost","8081")."\t";
+print getVoltage()."\t";
+print getTemperature()."\t";
 print "\n";
 
 exit(0);
@@ -68,4 +70,16 @@ sub checkHTTP {
   my $output = `curl -s -I http://$host:$port`;
   return 1 if ($output =~ /200 OK/);
   return 0;
+}
+
+sub getVoltage {
+  my $voltsCore = `vcgencmd measure_volts core`;
+  ($voltsCore) = $voltsCore =~ /=(.+)/;
+  return $voltsCore;
+}
+
+sub getTemperature {
+  my $coretemp = `vcgencmd measure_temp`;
+  ($coretemp) = $coretemp =~ /=(.+)/;
+  return $coretemp;
 }
